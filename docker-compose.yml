@@ -1,0 +1,32 @@
+services:
+  server1:
+    build:
+      context: .
+      dockerfile: server1/Dockerfile
+    ports:
+      - "8080:8080"
+    networks:
+      - app-network
+
+  server2:
+    build:
+      context: .
+      dockerfile: server2/Dockerfile
+    ports:
+      - "8081:8081"
+    networks:
+      - app-network
+
+  client:
+    build:
+      context: .
+      dockerfile: client/Dockerfile
+    depends_on:
+      - server1
+      - server2
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

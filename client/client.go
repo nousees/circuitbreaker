@@ -8,8 +8,8 @@ import (
 )
 
 func main() {
-	client1 := apiclient.NewApiClient("http://localhost:8080", 2, 3)
-	client2 := apiclient.NewApiClient("http://localhost:8081", 2, 3)
+	client1 := apiclient.NewApiClient("http://server1:8080", 2, 3)
+	client2 := apiclient.NewApiClient("http://server2:8081", 2, 3)
 
 	ctx := context.Background()
 

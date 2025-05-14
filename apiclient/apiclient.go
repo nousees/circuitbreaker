@@ -23,7 +23,7 @@ func NewApiClient(baseURL string, maxRetries int, failureThreshold uint32) *ApiC
 	cb := gobreaker.NewCircuitBreaker(gobreaker.Settings{
 		Name:        fmt.Sprintf("cb-%s", baseURL),
 		MaxRequests: 2,
-		Interval:    30 * time.Second,
+		Interval:    60 * time.Second,
 		Timeout:     10 * time.Second,
 		ReadyToTrip: func(counts gobreaker.Counts) bool {
 			return counts.ConsecutiveFailures >= failureThreshold

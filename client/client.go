@@ -2,14 +2,17 @@ package main
 
 import (
 	"circuit_breaker/apiclient"
+	"circuit_breaker/config"
 	"context"
 	"log"
 	"time"
 )
 
 func main() {
-	client1 := apiclient.NewApiClient("http://server1:8080", 2, 3)
-	client2 := apiclient.NewApiClient("http://server2:8081", 2, 3)
+	cfg := config.Load()
+
+	client1 := apiclient.NewApiClient("http://server1:8080", cfg)
+	client2 := apiclient.NewApiClient("http://server2:8081", cfg)
 
 	ctx := context.Background()
 

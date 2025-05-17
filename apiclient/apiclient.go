@@ -8,6 +8,8 @@ import (
 	"net/http"
 	"time"
 
+	"circuit_breaker/config"
+
 	"github.com/sony/gobreaker"
 )
 
@@ -19,26 +21,25 @@ type ApiClient struct {
 	retryDelay     time.Duration
 }
 
-func NewApiClient(baseURL string, maxRetries int, failureThreshold uint32) *ApiClient {
+func NewApiClient(baseURL string, cfg *config.Config) *ApiClient {
 	cb := gobreaker.NewCircuitBreaker(gobreaker.Settings{
 		Name:        fmt.Sprintf("cb-%s", baseURL),
-		MaxRequests: 2,
-		Interval:    60 * time.Second,
-		Timeout:     10 * time.Second,
+		MaxRequests: cfg.MaxRequests,
+		Interval:    cfg.CBInterval,
+		Timeout:     cfg.CBTimeout,
 		ReadyToTrip: func(counts gobreaker.Counts) bool {
-			return counts.ConsecutiveFailures >= failureThreshold
+			return counts.ConsecutiveFailures >= cfg.FailureThreshold
 		},
 	})
 
 	return &ApiClient{
-		client:         &http.Client{Timeout: 5 * time.Second},
+		client:         &http.Client{Timeout: cfg.ClientTimeout},
 		circuitBreaker: cb,
 		baseURL:        baseURL,
-		maxRetries:     maxRetries,
-		retryDelay:     500 * time.Millisecond,
+		maxRetries:     cfg.MaxRetries,
+		retryDelay:     cfg.RetryDelay,
 	}
 }
-
 func (c *ApiClient) Call(ctx context.Context, endpoint string) (string, error) {
 	url := c.baseURL + endpoint
 	var lastErr error

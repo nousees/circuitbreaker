@@ -5,6 +5,8 @@ services:
       dockerfile: server1/Dockerfile
     ports:
       - "8080:8080"
+    env_file:
+      - .env
     networks:
       - app-network
 
@@ -14,6 +16,8 @@ services:
       dockerfile: server2/Dockerfile
     ports:
       - "8081:8081"
+    env_file:
+      - .env
     networks:
       - app-network
 
@@ -24,6 +28,8 @@ services:
     depends_on:
       - server1
       - server2
+    env_file:
+      - .env
     networks:
       - app-network
 
